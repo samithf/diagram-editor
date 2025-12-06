@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 import { toast } from "sonner";
 import type { Edge, Node } from "@xyflow/react";
 import { DiagramService } from "@/services/DiagramService";
+import { UserAccessService } from "@/services/UserAccessService";
 
 interface UseDiagramActionsParams {
   nodes: Node[];
@@ -54,8 +55,25 @@ export function useDiagramEditor({
         const diagram = await DiagramService.getDiagram(diagramId);
 
         if (diagram) {
-          // Verify the diagram belongs to the current user
-          if (diagram.userId !== user.uid) {
+          // Check if user is the owner
+          const isOwner = diagram.userId === user.uid;
+
+          // Check if user has shared access
+          let hasSharedAccess = false;
+          if (!isOwner) {
+            try {
+              hasSharedAccess = await UserAccessService.hasAccessToDiagram(
+                user.uid,
+                diagramId
+              );
+            } catch (error) {
+              console.error("Error checking shared access:", error);
+              hasSharedAccess = false;
+            }
+          }
+
+          // Verify the user has permission to access this diagram
+          if (!isOwner && !hasSharedAccess) {
             toast.error("You don't have permission to access this diagram");
             return;
           }
@@ -143,6 +161,31 @@ export function useDiagramEditor({
     [user]
   );
 
+  const hasEditAccess = useCallback(
+    async (diagramId: string) => {
+      if (!diagramId || !user) return false;
+
+      try {
+        const isOwner = await DiagramService.isDiagramOwner(
+          diagramId,
+          user.uid
+        );
+        if (isOwner) return true;
+
+        const accessLevel = await UserAccessService.getDiagramAccessLevel(
+          user.uid,
+          diagramId
+        );
+
+        return accessLevel === "edit";
+      } catch (error) {
+        console.error("Error checking edit access:", error);
+        return false;
+      }
+    },
+    [user]
+  );
+
   return {
     addNode,
     clearCanvas,
@@ -153,5 +196,6 @@ export function useDiagramEditor({
     isLoading,
     currentDiagramId,
     currentDiagramName,
+    hasEditAccess,
   };
 }

@@ -1,4 +1,3 @@
-// src/components/auth/LoginForm.tsx
 import React from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -35,53 +34,74 @@ export const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       navigate("/dashboard");
-    } catch (error: any) {
-      setFirebaseError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setFirebaseError(error.message);
+      } else {
+        setFirebaseError("An unexpected error occurred. Please try again.");
+      }
     }
   };
 
   return (
-    <Card className="max-w-sm mx-auto mt-10 p-6">
+    <Card className="max-w-sm mx-auto mt-10 p-6 bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg dark:shadow-gray-900/50">
       <CardHeader>
-        <CardTitle className="text-xl text-center">Login</CardTitle>
+        <CardTitle className="text-xl text-center text-gray-900 dark:text-gray-100">
+          Login
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <Label>Email</Label>
+            <Label className="text-gray-700 dark:text-gray-300 pb-1">
+              Email
+            </Label>
             <Input
               type="email"
               {...register("email")}
               placeholder="you@example.com"
+              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
             {errors.email && (
-              <p className="text-red-500 text-sm">{errors.email.message}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm">
+                {errors.email.message}
+              </p>
             )}
           </div>
 
           <div>
-            <Label>Password</Label>
+            <Label className="text-gray-700 dark:text-gray-300 pb-1">
+              Password
+            </Label>
             <Input
               type="password"
               {...register("password")}
               placeholder="••••••••"
+              className="bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400"
             />
             {errors.password && (
-              <p className="text-red-500 text-sm">{errors.password.message}</p>
+              <p className="text-red-500 dark:text-red-400 text-sm">
+                {errors.password.message}
+              </p>
             )}
           </div>
 
           {firebaseError && (
-            <p className="text-red-500 text-sm">{firebaseError}</p>
+            <p className="text-red-500 dark:text-red-400 text-sm">
+              {firebaseError}
+            </p>
           )}
 
           <Button type="submit" className="w-full" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
-        <p className="mt-4 text-center">
+        <p className="mt-4 text-center text-gray-600 dark:text-gray-400">
           Don't have an account?{" "}
-          <a href="/signup" className="text-blue-500 hover:underline">
+          <a
+            href="/signup"
+            className="text-blue-500 dark:text-blue-400 hover:underline"
+          >
             Sign Up
           </a>
         </p>

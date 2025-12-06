@@ -4,9 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, Mail, User, Calendar } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Badge } from "@/components/ui/badge";
 
 export default function Profile() {
-  const { user, logout } = useAuth();
+  const { user, role, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -51,7 +52,7 @@ export default function Profile() {
               <Avatar className="w-20 h-20">
                 <AvatarImage src={user?.photoURL || ""} alt="Profile" />
                 <AvatarFallback className="text-xl bg-blue-500 text-white">
-                  {user?.email ? getInitials(user.email) : "U"}
+                  {user?.email ? getInitials(user.email) : "U"}{" "}
                 </AvatarFallback>
               </Avatar>
               <div>
@@ -61,6 +62,9 @@ export default function Profile() {
                 <p className="text-gray-500 dark:text-gray-400 mt-1">
                   {user?.email}
                 </p>
+                <Badge variant="outline" className="mt-2">
+                  {role}
+                </Badge>
               </div>
             </div>
           </CardHeader>

@@ -80,4 +80,18 @@ export class DiagramService {
     });
     return diagrams;
   }
+
+  static async isDiagramOwner(
+    diagramId: string,
+    userId: string
+  ): Promise<boolean> {
+    const diagramRef = doc(db, "diagrams", diagramId);
+    const diagramSnap = await getDoc(diagramRef);
+    if (diagramSnap.exists()) {
+      const diagramData = diagramSnap.data();
+      return diagramData.userId === userId;
+    } else {
+      throw new Error("Diagram not found");
+    }
+  }
 }

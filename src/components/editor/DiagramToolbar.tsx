@@ -9,7 +9,9 @@ interface DiagramToolbarProps {
   hasNodes: boolean;
   onClearCanvas: () => void;
   currentDiagramName?: string;
+  disabled: boolean;
   isUpdating?: boolean;
+  diagramOwnerId?: string; // Add owner ID to check ownership
 }
 
 export function DiagramToolbar({
@@ -18,6 +20,7 @@ export function DiagramToolbar({
   hasNodes,
   onClearCanvas,
   currentDiagramName,
+  disabled,
   isUpdating = false,
 }: DiagramToolbarProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -32,7 +35,7 @@ export function DiagramToolbar({
             </span>
           </div>
         )}
-        <Button onClick={onAddNode}>
+        <Button onClick={onAddNode} disabled={disabled}>
           <Plus />
           Add Node
         </Button>
@@ -40,11 +43,15 @@ export function DiagramToolbar({
           isOpen={isDialogOpen}
           onOpenChange={setIsDialogOpen}
           onSave={onSave}
-          disabled={!hasNodes}
+          disabled={disabled || !hasNodes}
           defaultName={currentDiagramName}
           isUpdating={isUpdating}
         />
-        <Button variant="outline" onClick={onClearCanvas} disabled={!hasNodes}>
+        <Button
+          variant="outline"
+          onClick={onClearCanvas}
+          disabled={disabled || !hasNodes}
+        >
           Clear Canvas
         </Button>
       </div>

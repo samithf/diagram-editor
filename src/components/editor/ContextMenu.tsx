@@ -6,6 +6,7 @@ interface ContextMenuProps {
   onEdgeDelete: (edgeId: string) => void;
   onNodeDelete: (nodeId: string) => void;
   onClose: () => void;
+  disabled: boolean;
 }
 
 const edgeOptions = [
@@ -27,6 +28,7 @@ export function ContextMenu({
   onEdgeDelete,
   onNodeDelete,
   onClose,
+  disabled,
 }: ContextMenuProps) {
   const handleEdgeAction = (option: (typeof edgeOptions)[0]) => {
     if (option.value === "delete") {
@@ -43,6 +45,8 @@ export function ContextMenu({
     }
     onClose();
   };
+
+  if (disabled) return null;
 
   return (
     <div

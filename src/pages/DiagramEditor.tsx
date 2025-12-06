@@ -5,7 +5,7 @@ import { DiagramToolbar } from "@/components/editor/DiagramToolbar";
 import { ContextMenu } from "@/components/editor/ContextMenu";
 import { EditableNode } from "@/components/editor/EditableNode";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useTheme } from "@/context/ThemeContext";
 
 const nodeTypes = {
@@ -43,6 +43,7 @@ export function DiagramEditor() {
     isLoading,
     currentDiagramId,
     currentDiagramName,
+    hasEditAccess,
   } = useDiagramEditor({
     nodes,
     edges,
@@ -50,11 +51,24 @@ export function DiagramEditor() {
     setEdges,
   });
 
+  const [hasEditPermission, setHasEditPermission] = useState<boolean>(false);
+
   useEffect(() => {
     if (diagramId) {
       loadDiagram(diagramId);
     }
   }, [diagramId, loadDiagram]);
+
+  useEffect(() => {
+    const checkEditAccess = async () => {
+      if (diagramId) {
+        const access = await hasEditAccess(diagramId);
+        console.log("User has edit access:", access);
+        setHasEditPermission(access);
+      }
+    };
+    checkEditAccess();
+  }, [diagramId, hasEditAccess, hasEditPermission]);
 
   return (
     <div className="h-full w-full">
@@ -70,6 +84,7 @@ export function DiagramEditor() {
         hasNodes={nodes.length > 0}
         onClearCanvas={clearCanvas}
         currentDiagramName={currentDiagramName}
+        disabled={!hasEditPermission}
         isUpdating={!!currentDiagramId}
       />
 
@@ -97,6 +112,7 @@ export function DiagramEditor() {
           onEdgeDelete={handleEdgeDelete}
           onNodeDelete={handleNodeDelete}
           onClose={() => setContextMenu(null)}
+          disabled={!hasEditPermission}
         />
       )}
     </div>
