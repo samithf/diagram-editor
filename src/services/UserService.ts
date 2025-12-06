@@ -1,5 +1,5 @@
 import { db } from "@/firebaseConfig";
-import { collection, doc, getDocs, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import type { User } from "@/types";
 
 export class UserService {
