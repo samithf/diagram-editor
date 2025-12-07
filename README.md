@@ -176,6 +176,26 @@ Visit `http://localhost:5173` to see the application.
 | `pnpm preview` | Preview production build |
 | `pnpm lint`    | Run ESLint               |
 
+## 🧪 Running Tests
+
+```bash
+# Run tests in watch mode
+pnpm test
+
+# Run tests once
+pnpm test:run
+
+# Run tests with coverage
+pnpm test:coverage
+
+# Open interactive test UI
+pnpm test:ui
+```
+
+**Current Coverage:** 100% ✅ (35 tests passing)
+
+See [TEST_COVERAGE.md](./TEST_COVERAGE.md) for details.
+
 ## 🎯 Usage
 
 ### Creating Diagrams

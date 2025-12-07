@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FileText, Calendar, Eye, Edit, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { DiagramAccess } from "@/types";
+import type { AccessLevel, DiagramAccess } from "@/types";
 import { formatDate } from "@/lib/date";
 
 export interface DiagramAccessCardProps {
@@ -17,7 +17,7 @@ export function DiagramAccessCard({ diagramAccess }: DiagramAccessCardProps) {
     navigate(`/editor/${diagramAccess.diagramId}`);
   };
 
-  const getAccessIcon = (accessLevel: string) => {
+  const getAccessIcon = (accessLevel: AccessLevel) => {
     return accessLevel === "edit" ? (
       <Edit className="w-4 h-4" />
     ) : (
@@ -25,7 +25,7 @@ export function DiagramAccessCard({ diagramAccess }: DiagramAccessCardProps) {
     );
   };
 
-  const getAccessColor = (accessLevel: string) => {
+  const getAccessColor = (accessLevel: AccessLevel) => {
     return accessLevel === "edit"
       ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400"
       : "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400";

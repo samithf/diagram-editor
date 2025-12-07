@@ -29,7 +29,6 @@ export function SharedDiagrams() {
         user.uid
       );
       setSharedDiagrams(sharedDiagrams);
-      console.log("Fetched shared diagrams:", sharedDiagrams);
     } catch (err) {
       console.error("Error fetching shared diagrams:", err);
       setError("Failed to load shared diagrams");

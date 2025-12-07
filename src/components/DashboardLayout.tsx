@@ -10,8 +10,6 @@ export function DashboardLayout() {
 
         {/* Content */}
         <main className="flex-1 p-6 overflow-y-auto bg-gray-50 dark:bg-gray-950">
-          {/* <h1 className="text-2xl font-semibold mb-6">Welcome, {user.email}</h1> */}
-
           <Outlet />
         </main>
       </div>

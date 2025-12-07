@@ -41,13 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  // const refreshUserRole = async () => {
-  //   if (user?.uid) {
-  //     const fetchedRole = await fetchUserRole(user.uid);
-  //     setRole(fetchedRole);
-  //   }
-  // };
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);

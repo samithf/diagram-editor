@@ -63,7 +63,6 @@ export function DiagramEditor() {
     const checkEditAccess = async () => {
       if (diagramId) {
         const access = await hasEditAccess(diagramId);
-        console.log("User has edit access:", access);
         setHasEditPermission(access);
       }
     };

@@ -63,17 +63,17 @@ export function useDiagramState() {
     setContextMenu(null);
   }, []);
 
-  const handleEdgeDelete = (edgeId: string) => {
+  const handleEdgeDelete = useCallback((edgeId: string) => {
     setEdges((edges) => edges.filter((edge) => edge.id !== edgeId));
-  };
+  }, []);
 
-  const handleNodeDelete = (nodeId: string) => {
+  const handleNodeDelete = useCallback((nodeId: string) => {
     setNodes((nodes) => nodes.filter((node) => node.id !== nodeId));
     // Also remove any connected edges
     setEdges((edges) =>
       edges.filter((edge) => edge.source !== nodeId && edge.target !== nodeId)
     );
-  };
+  }, []);
 
   return {
     nodes,
