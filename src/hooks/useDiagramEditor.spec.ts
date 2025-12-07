@@ -37,6 +37,12 @@ import { DiagramService } from "@/services/DiagramService";
 import { UserAccessService } from "@/services/UserAccessService";
 import { v4 as uuidv4 } from "uuid";
 
+const mockUseAuth = vi.hoisted(() => vi.fn());
+
+vi.mock("@/context/AuthContext", () => ({
+  useAuth: mockUseAuth,
+}));
+
 const mockToast = toast as unknown as {
   success: ReturnType<typeof vi.fn>;
   error: ReturnType<typeof vi.fn>;
@@ -79,6 +85,16 @@ describe("useDiagramEditor", () => {
     }) as Dispatch<SetStateAction<Edge[]>>;
     // Use the same user ID as in the test setup
     mockUser = { uid: "test-user-id", email: "test@example.com" };
+
+    // Setup default useAuth mock
+    mockUseAuth.mockReturnValue({
+      user: mockUser,
+      role: "user",
+      login: vi.fn(),
+      logout: vi.fn(),
+      signup: vi.fn(),
+      loading: false,
+    });
 
     // Reset all mocks
     vi.clearAllMocks();
@@ -742,7 +758,54 @@ describe("useDiagramEditor", () => {
   });
 
   describe("hasEditAccess", () => {
-    it("should return false if no diagramId provided", async () => {
+    it("should return false for new diagram when user role is not editor", async () => {
+      const { result } = renderHook(() =>
+        useDiagramEditor({
+          nodes: mockNodes,
+          edges: mockEdges,
+          setNodes: mockSetNodes,
+          setEdges: mockSetEdges,
+        })
+      );
+
+      let hasAccess: boolean | undefined;
+      await act(async () => {
+        hasAccess = await result.current.hasEditAccess(undefined);
+      });
+
+      // Mock user has role "user" from setup, not "editor"
+      expect(hasAccess).toBe(false);
+    });
+
+    it("should return true for new diagram when user role is editor", async () => {
+      // Override the default mock to return "editor" role
+      mockUseAuth.mockReturnValue({
+        user: mockUser,
+        role: "editor",
+        login: vi.fn(),
+        logout: vi.fn(),
+        signup: vi.fn(),
+        loading: false,
+      });
+
+      const { result } = renderHook(() =>
+        useDiagramEditor({
+          nodes: mockNodes,
+          edges: mockEdges,
+          setNodes: mockSetNodes,
+          setEdges: mockSetEdges,
+        })
+      );
+
+      let hasAccess: boolean | undefined;
+      await act(async () => {
+        hasAccess = await result.current.hasEditAccess(undefined);
+      });
+
+      expect(hasAccess).toBe(true);
+    });
+
+    it("should return false if no diagramId provided (empty string)", async () => {
       const { result } = renderHook(() =>
         useDiagramEditor({
           nodes: mockNodes,
@@ -757,6 +820,7 @@ describe("useDiagramEditor", () => {
         hasAccess = await result.current.hasEditAccess("");
       });
 
+      // Empty string is treated same as no diagramId, check role
       expect(hasAccess).toBe(false);
     });
 

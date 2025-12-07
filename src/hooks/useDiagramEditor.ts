@@ -28,7 +28,7 @@ export function useDiagramEditor({
   const [isLoading, setIsLoading] = useState(false);
   const [currentDiagramId, setCurrentDiagramId] = useState<string | null>(null);
   const [currentDiagramName, setCurrentDiagramName] = useState<string>("");
-  const { user } = useAuth();
+  const { user, role } = useAuth();
 
   const addNode = useCallback(() => {
     const newNode: Node = {
@@ -162,8 +162,13 @@ export function useDiagramEditor({
   );
 
   const hasEditAccess = useCallback(
-    async (diagramId: string) => {
-      if (!diagramId || !user) return false;
+    async (diagramId?: string) => {
+      if (!user) return false;
+
+      // check permission for new diagram with user role
+      if (!diagramId) {
+        return role === "editor";
+      }
 
       try {
         const isOwner = await DiagramService.isDiagramOwner(
@@ -183,7 +188,7 @@ export function useDiagramEditor({
         return false;
       }
     },
-    [user]
+    [role, user]
   );
 
   return {

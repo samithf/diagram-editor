@@ -61,10 +61,8 @@ export function DiagramEditor() {
 
   useEffect(() => {
     const checkEditAccess = async () => {
-      if (diagramId) {
-        const access = await hasEditAccess(diagramId);
-        setHasEditPermission(access);
-      }
+      const access = await hasEditAccess(diagramId ? diagramId : undefined);
+      setHasEditPermission(access);
     };
     checkEditAccess();
   }, [diagramId, hasEditAccess, hasEditPermission]);
