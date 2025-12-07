@@ -43,7 +43,7 @@ export function SharedDiagrams() {
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
         <span className="ml-2 text-gray-600 dark:text-gray-400">
-          Loading diagrams...
+          Loading shared diagrams...
         </span>
       </div>
     );
